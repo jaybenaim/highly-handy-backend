@@ -19,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           $city: req.headers["x-vercel-ip-city"],
           $country: req.headers["x-vercel-ip-country"],
         },
-        ip ? 1 : ip
+        ip
       );
 
       console.log("Sent tracking event - ", eventName);
