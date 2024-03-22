@@ -26,9 +26,10 @@ export const mixpanelTrack = async (
       },
       body: JSON.stringify([
         {
-          ip,
+          ip: ip ? 1 : ip, // create a distinct id on the fly
           event: eventName,
           properties: {
+            ip,
             token: process.env.NEXT_MIXPANEL_TOKEN,
             ...eventData,
           },
