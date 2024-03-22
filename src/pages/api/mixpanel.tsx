@@ -5,22 +5,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
-      const { eventName, eventData } = JSON.parse(req.body);
+      const { eventName, eventData, userId } = JSON.parse(req.body);
 
-      const ip =
-        req.headers["x-real-ip"] && req.headers["x-real-ip"].length > 0
-          ? req.headers["x-real-ip"][0]
-          : "unknown";
-
-      await mixpanelTrack(
-        eventName,
-        {
-          ...eventData,
-          $city: req.headers["x-vercel-ip-city"],
-          $country: req.headers["x-vercel-ip-country"],
-        },
-        ip
-      );
+      await mixpanelTrack(eventName, userId, {
+        ...eventData,
+        $city: req.headers["x-vercel-ip-city"],
+        $country: req.headers["x-vercel-ip-country"],
+      });
 
       console.log("Sent tracking event - ", eventName);
       return res.status(200).send({ status: "success" });

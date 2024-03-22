@@ -9,8 +9,8 @@ import { IS_DEVELOPMENT } from "../consts";
  */
 export const mixpanelTrack = async (
   eventName: string,
-  eventData: Record<string, string>,
-  ip: string
+  userId: string,
+  eventData: Record<string, string>
 ) => {
   if (IS_DEVELOPMENT) {
     console.log("Mixpanel Event not tracked due to DEV environment");
@@ -26,10 +26,9 @@ export const mixpanelTrack = async (
       },
       body: JSON.stringify([
         {
-          ip: ip ? 1 : ip, // create a distinct id on the fly
           event: eventName,
           properties: {
-            ip,
+            distinct_id: userId,
             token: process.env.NEXT_MIXPANEL_TOKEN,
             ...eventData,
           },
