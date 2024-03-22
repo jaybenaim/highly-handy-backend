@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         ip
       );
 
-      console.log("Sent tracking event ", eventName);
+      console.log("Sent tracking event - ", eventName);
       return res.status(200).send({ status: "success" });
     } catch (e) {
       console.log(
