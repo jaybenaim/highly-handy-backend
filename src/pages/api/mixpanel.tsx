@@ -5,18 +5,26 @@ import { NextApiRequest, NextApiResponse } from "next";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
-      const { email, eventName, eventData, debug } = JSON.parse(req.body);
+      const { eventName, eventData } = JSON.parse(req.body);
 
       // eslint-disable-next-line no-undef
-      await mixpanelTrack(email, eventName, eventData, debug);
-      console.log("DEBUG Mixpanel tracking event:", email, eventName, {
+      await mixpanelTrack(eventName, {
+        ...eventData,
+        $city: req.headers["x-vercel-ip-city"],
+        $country: req.headers["x-vercel-ip-country"],
+      });
+      console.log("DEBUG Mixpanel tracking event:", eventName, {
         ...eventData,
         $city: req.headers["x-vercel-ip-city"],
         $country: req.headers["x-vercel-ip-country"],
       });
       return res.status(200).send({ status: "success" });
     } catch (e) {
-      console.log("ERROR Mixpanel api.trackMixpanelEvent failed", req.body, e);
+      console.log(
+        "ERROR Mixpanel api.trackMixpanelEvent failed",
+        JSON.stringify(req.body, null, 2),
+        e
+      );
 
       return res
         .status(500)

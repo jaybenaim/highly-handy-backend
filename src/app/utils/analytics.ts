@@ -2,17 +2,14 @@ import { IS_DEVELOPMENT } from "../consts";
 
 /**
  * Send server-side mixpanel event
- * @param {string} email
  * @param {string} eventName
  * @param {object} eventData
  */
 export const mixpanelTrack = async (
-  email: string,
   eventName: string,
-  eventData: Record<string, string>,
-  debug = false
+  eventData: Record<string, string>
 ) => {
-  if ((email?.includes("renotag") || IS_DEVELOPMENT) && !debug) {
+  if (IS_DEVELOPMENT) {
     console.log("Mixpanel Event not tracked due to DEV environment");
     return;
   }
@@ -29,7 +26,6 @@ export const mixpanelTrack = async (
           event: eventName,
           properties: {
             token: process.env.NEXT_MIXPANEL_TOKEN,
-            distinct_id: email,
             ...eventData,
           },
         },
