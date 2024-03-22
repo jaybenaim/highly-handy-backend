@@ -7,17 +7,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { eventName, eventData } = JSON.parse(req.body);
 
-      // eslint-disable-next-line no-undef
-      await mixpanelTrack(eventName, {
-        ...eventData,
-        $city: req.headers["x-vercel-ip-city"],
-        $country: req.headers["x-vercel-ip-country"],
-      });
-      console.log("DEBUG Mixpanel tracking event:", eventName, {
-        ...eventData,
-        $city: req.headers["x-vercel-ip-city"],
-        $country: req.headers["x-vercel-ip-country"],
-      });
+      const ip =
+        req.headers["x-real-ip"] && req.headers["x-real-ip"].length > 0
+          ? req.headers["x-real-ip"][0]
+          : "unknown";
+
+      await mixpanelTrack(
+        eventName,
+        {
+          ...eventData,
+          $city: req.headers["x-vercel-ip-city"],
+          $country: req.headers["x-vercel-ip-country"],
+        },
+        ip
+      );
+
+      console.log("Sent tracking event ", eventName);
       return res.status(200).send({ status: "success" });
     } catch (e) {
       console.log(

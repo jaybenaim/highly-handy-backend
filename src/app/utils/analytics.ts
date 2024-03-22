@@ -4,10 +4,13 @@ import { IS_DEVELOPMENT } from "../consts";
  * Send server-side mixpanel event
  * @param {string} eventName
  * @param {object} eventData
+ * @param {string} ip
+ *
  */
 export const mixpanelTrack = async (
   eventName: string,
-  eventData: Record<string, string>
+  eventData: Record<string, string>,
+  ip: string
 ) => {
   if (IS_DEVELOPMENT) {
     console.log("Mixpanel Event not tracked due to DEV environment");
@@ -23,6 +26,7 @@ export const mixpanelTrack = async (
       },
       body: JSON.stringify([
         {
+          ip,
           event: eventName,
           properties: {
             token: process.env.NEXT_MIXPANEL_TOKEN,
